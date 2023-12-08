@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package userproto;
+
+service UserService {
+  rpc findAll(findAllRequest) returns (findAllResponse) {}
+  rpc create(createRequest) returns (createResponse) {}
+  rpc findOne(findOneRequest) returns (User) {}
+  rpc update(updateRequest) returns (updateResponse) {}
+  rpc remove(removeRequest) returns (removeResponse) {}
+}
+
+message findAllRequest {
+
+}
+
+message findAllResponse {
+  repeated User users = 1;
+}
+
+message User {
+  int32 id = 1;
+  string name = 2;
+  string email = 3;
+  int32 age = 4;
+  string password = 5;
+}
+
+message createRequest {
+  int32 id = 1;
+  string name = 2;
+  string email = 3;
+  int32 age = 4;
+  string password = 5;
+}
+
+
+message findOneRequest {
+  int32 id = 1;
+}
+message createResponse {
+  string msg = 1;
+}
+
+message updateRequest {
+  int32 id = 1;
+  string name = 2;
+  int32 age = 3;
+}
+message updateResponse {
+  string msg = 1;
+}
+
+
+message removeRequest {
+  int32 id = 1;
+}
+message removeResponse {
+  string msg = 1;
+}
