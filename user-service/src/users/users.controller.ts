@@ -5,6 +5,7 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { GetUserDto } from "./dto/get-user.dto";
 import { GrpcMethod, RpcException } from "@nestjs/microservices";
 import { RemoveUserDto } from "./dto/remove-user.dto";
+import { GrpcNotFoundException } from "nestjs-grpc-exceptions";
 
 @Controller("users")
 export class UsersController {
@@ -13,41 +14,52 @@ export class UsersController {
 
   @GrpcMethod("UserService", "create")
   async create(@Body() createUserDto: CreateUserDto) {
-      const name = createUserDto?.name;
-      const email = createUserDto?.email;
-      const password = createUserDto?.password;
-      const age = +createUserDto?.age;
-      let serviceResult = await this.usersService.create(name, email, password, age);
-      console.log(serviceResult);
-      return { msg: "This action adds a new user" };
-
+    const name = createUserDto?.name;
+    const email = createUserDto?.email;
+    const password = createUserDto?.password;
+    const age = +createUserDto?.age;
+    let serviceResult = await this.usersService.create(name, email, password, age);
+    return { msg: `user ${serviceResult.name} added` };
 
 
   }
 
   @GrpcMethod("UserService", "findAll")
-  findAll() {
-    return this.usersService.findAll();
+  async findAll() {
+    let serviceResult = await this.usersService.findAll();
+    return { users: serviceResult };
   }
 
   @GrpcMethod("UserService", "findOne")
-  findOne(@Body() getUserDto: GetUserDto) {
+  async findOne(@Body() getUserDto: GetUserDto) {
     let id = +getUserDto?.id;
-    return this.usersService.findOne(id);
+    let serviceResult = await this.usersService.findOne(id);
+    if (serviceResult) return serviceResult;
+    throw new GrpcNotFoundException("user not found.");
   }
 
   @GrpcMethod("UserService", "update")
-  update(@Body() updateUserDto: UpdateUserDto) {
+  async update(@Body() updateUserDto: UpdateUserDto) {
     console.log(updateUserDto);
     const id = +updateUserDto?.id;
     const name = updateUserDto?.name;
     const age = +updateUserDto?.age;
-    return this.usersService.update(id, name, age);
+    let serviceResult = await this.usersService.update(id, name, age);
+    console.log("======-----===");
+    console.log(serviceResult.affected);
+    console.log("======-----========");
+    if (serviceResult.affected) return { msg: `user ${name} edited` };
+    throw new GrpcNotFoundException("user not found.");
   }
 
   @GrpcMethod("UserService", "remove")
-  remove(@Body() removeUserDto: RemoveUserDto) {
+  async remove(@Body() removeUserDto: RemoveUserDto) {
     let id = +removeUserDto?.id;
-    return this.usersService.remove(id);
+    let serviceResult = await this.usersService.remove(id);
+    console.log("======-----===");
+    console.log(serviceResult.affected);
+    console.log("======-----========");
+    if (serviceResult.affected) return { msg: `user ${id} deleted` };
+    throw new GrpcNotFoundException("user not found.");
   }
 }

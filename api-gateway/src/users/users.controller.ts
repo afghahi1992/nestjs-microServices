@@ -7,12 +7,13 @@ import {
   Param,
   Delete,
   OnModuleInit,
-  Inject,
-} from '@nestjs/common';
+  Inject, UseInterceptors
+} from "@nestjs/common";
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ClientGrpc } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
+import { GrpcToHttpInterceptor } from 'nestjs-grpc-exceptions';
 
 interface UserService {
   findAll({}): Observable<any>;
@@ -38,6 +39,7 @@ export class UsersController implements OnModuleInit {
   }
 
   @Post()
+  @UseInterceptors(GrpcToHttpInterceptor)
   create(@Body() createUserDto: CreateUserDto) {
     const serviceResult = this.userService.create(createUserDto);
     console.log(serviceResult);
@@ -45,6 +47,7 @@ export class UsersController implements OnModuleInit {
   }
 
   @Get()
+  @UseInterceptors(GrpcToHttpInterceptor)
   findAll() {
     const serviceResult = this.userService.findAll(null);
     console.log(serviceResult);
@@ -52,6 +55,7 @@ export class UsersController implements OnModuleInit {
   }
 
   @Get(':id')
+  @UseInterceptors(GrpcToHttpInterceptor)
   findOne(@Param('id') id: string) {
     const serviceResult = this.userService.findOne({id:+id} );
     console.log(serviceResult);
@@ -59,6 +63,7 @@ export class UsersController implements OnModuleInit {
   }
 
   @Patch(':id')
+  @UseInterceptors(GrpcToHttpInterceptor)
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     const updateModel = {
       name: updateUserDto.name,
@@ -71,6 +76,7 @@ export class UsersController implements OnModuleInit {
   }
 
   @Delete(':id')
+  @UseInterceptors(GrpcToHttpInterceptor)
   remove(@Param('id') id: string) {
     const serviceResult = this.userService.remove({id:+id});
     console.log(serviceResult);
