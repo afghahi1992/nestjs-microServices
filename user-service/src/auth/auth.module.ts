@@ -8,7 +8,7 @@ import { AuthGuard } from './auth.guard';
 import { Auth } from './entities/auth.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Auth])],
+  imports: [TypeOrmModule.forFeature([User,Auth])],
   controllers: [AuthController],
   providers: [
     AuthService,

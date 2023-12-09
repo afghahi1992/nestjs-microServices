@@ -14,6 +14,8 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { ClientGrpc } from "@nestjs/microservices";
 import { Observable } from "rxjs";
 import { GrpcToHttpInterceptor } from "nestjs-grpc-exceptions";
+import { SignUpAuthDto } from "./dto/signUp-auth.dto";
+import { SignInAuthDto } from "./dto/signIn-auth.dto";
 
 interface UserService {
   findAll({}): Observable<any>;
@@ -27,16 +29,24 @@ interface UserService {
   remove({}): Observable<any>;
 }
 
+interface AuthService {
+  signUp({}): Observable<any>;
+
+  signIn({}): Observable<any>;
+}
+
 
 @Controller("users")
 export class UsersController implements OnModuleInit {
   private userService: UserService;
+  private authService: AuthService;
 
   constructor(@Inject("USERPROTO_PACKAGE") private client: ClientGrpc) {
   }
 
   onModuleInit() {
     this.userService = this.client.getService<UserService>("UserService");
+    this.authService = this.client.getService<AuthService>("AuthService");
   }
 
   @Post()
@@ -73,4 +83,20 @@ export class UsersController implements OnModuleInit {
   remove(@Param("id") id: string) {
     return this.userService.remove({ id: +id });
   }
+
+  @Post('signUp')
+  @UseInterceptors(GrpcToHttpInterceptor)
+  signUp(@Body() signUpAuthDto: SignUpAuthDto) {
+    // return {msg:'ok'};
+    return this.authService.signUp(signUpAuthDto);
+  }
+
+  @Post('signIn')
+  @UseInterceptors(GrpcToHttpInterceptor)
+  signIn(@Body() signInAuthDto: SignInAuthDto) {
+    return this.authService.signIn(signInAuthDto);
+  }
+
+
+
 }

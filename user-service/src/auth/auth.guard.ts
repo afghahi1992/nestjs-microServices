@@ -12,6 +12,7 @@ import { Reflector } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Auth } from './entities/auth.entity';
 import {Repository} from 'typeorm'
+import { GrpcUnauthenticatedException } from "nestjs-grpc-exceptions";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -33,7 +34,9 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
-      throw new UnauthorizedException();
+      // throw new UnauthorizedException();
+      console.log('no token')
+      throw new GrpcUnauthenticatedException('no 122');
     }
     try {
       const payload: any = JWT.verify(token, process.env.TOKEN_KEY);
@@ -43,7 +46,9 @@ export class AuthGuard implements CanActivate {
       const oldToken = await this.getTokenFromDB(payload?.email);
       if (oldToken === token) return true;
     } catch {
-      throw new UnauthorizedException();
+      // throw new UnauthorizedException();
+      throw new GrpcUnauthenticatedException('no 12');
+
     }
     return true;
   }
@@ -53,6 +58,10 @@ export class AuthGuard implements CanActivate {
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
+
+    console.log("-----");
+    console.log(request.body);
+    console.log(request.headers);
     return request.headers?.authorization;
   }
 }

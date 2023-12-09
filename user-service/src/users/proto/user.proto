@@ -58,3 +58,31 @@ message removeRequest {
 message removeResponse {
   string msg = 1;
 }
+
+
+service AuthService {
+  rpc signIn(signInRequest) returns (signInResponse) {}
+  rpc signUp(signUpRequest) returns (signUpResponse) {}
+}
+message signUpRequest {
+  int32 id = 1;
+  string name = 2;
+  string email = 3;
+  int32 age = 4;
+  string password = 5;
+}
+message signUpResponse {
+  string msg = 1;
+}
+
+
+message signInRequest {
+  int32 id = 1;
+  string name = 2;
+  string email = 3;
+  int32 age = 4;
+  string password = 5;
+}
+message signInResponse {
+  string msg = 1;
+}
