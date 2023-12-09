@@ -57,6 +57,7 @@ export class UsersController {
     let id = +removeUserDto?.id;
     let serviceResult = await this.usersService.remove(id);
     console.log("======-----===");
+    console.log("======-----===");
     console.log(serviceResult.affected);
     console.log("======-----========");
     if (serviceResult.affected) return { msg: `user ${id} deleted` };
