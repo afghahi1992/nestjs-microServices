@@ -1,58 +1,53 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
-import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { GrpcMethod } from '@nestjs/microservices';
-import { Metadata, ServerUnaryCall } from "@grpc/grpc-js";
-// import { Micr1ById, Micr1 } from './proto/user.proto';
+import { Controller, Body, Catch } from "@nestjs/common";
+import { UsersService } from "./users.service";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { GetUserDto } from "./dto/get-user.dto";
+import { GrpcMethod, RpcException } from "@nestjs/microservices";
+import { RemoveUserDto } from "./dto/remove-user.dto";
 
-interface Micr1 {
-  id: number;
-}
-
-@Controller('users')
+@Controller("users")
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
-
-  @GrpcMethod('UserService', 'create')
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  constructor(private readonly usersService: UsersService) {
   }
 
-  @GrpcMethod('UserService', 'findAll')
-  @Get()
+  @GrpcMethod("UserService", "create")
+  async create(@Body() createUserDto: CreateUserDto) {
+      const name = createUserDto?.name;
+      const email = createUserDto?.email;
+      const password = createUserDto?.password;
+      const age = +createUserDto?.age;
+      let serviceResult = await this.usersService.create(name, email, password, age);
+      console.log(serviceResult);
+      return { msg: "This action adds a new user" };
+
+
+
+  }
+
+  @GrpcMethod("UserService", "findAll")
   findAll() {
     return this.usersService.findAll();
   }
 
-  @GrpcMethod('UserService', 'findOne')
-  @Get(':id')
-  findOne(data: Micr1, metadata: Metadata, call: ServerUnaryCall<any, any>) {
-    console.log("=====================");
-    console.log(data);
-    console.log(metadata);
-    return this.usersService.findOne(0);
+  @GrpcMethod("UserService", "findOne")
+  findOne(@Body() getUserDto: GetUserDto) {
+    let id = +getUserDto?.id;
+    return this.usersService.findOne(id);
   }
 
-  @GrpcMethod('UserService', 'update')
-  @Patch(':id')
+  @GrpcMethod("UserService", "update")
   update(@Body() updateUserDto: UpdateUserDto) {
     console.log(updateUserDto);
-    return this.usersService.update(updateUserDto);
+    const id = +updateUserDto?.id;
+    const name = updateUserDto?.name;
+    const age = +updateUserDto?.age;
+    return this.usersService.update(id, name, age);
   }
 
-  @GrpcMethod('UserService', 'remove')
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @GrpcMethod("UserService", "remove")
+  remove(@Body() removeUserDto: RemoveUserDto) {
+    let id = +removeUserDto?.id;
+    return this.usersService.remove(id);
   }
 }

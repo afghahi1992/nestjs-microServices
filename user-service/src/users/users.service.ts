@@ -15,17 +15,17 @@ export class UsersService {
   ) {
   }
 
-  async create(createUserDto: CreateUserDto) {
+  async create(name: string, email: string, password: string, age: number) {
 
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
     const user: User = new User();
-    user.name = createUserDto.name;
-    user.age = createUserDto.age;
-    user.email = createUserDto.email;
+    user.name = name;
+    user.age = age;
+    user.email = email;
     user.password = hashedPassword;
     user.type = type.USER;
-    await this.userRepository.save(user);
-    return { msg: "This action adds a new user" };
+    return await this.userRepository.save(user);
+
   }
 
   async findAll() {
@@ -35,18 +35,28 @@ export class UsersService {
   }
 
   async findOne(id: number) {
+    console.log("==============");
     console.log(id);
     let user = await this.userRepository.findOneBy({ id });
     console.log(user);
-    return { user: user };
+    return user;
     //return { msg: `This action returns a #${id} user` };
   }
 
-  update(updateUserDto: UpdateUserDto) {
+  async update(id: number, name: string, age: number) {
+
+    await this.userRepository
+      .createQueryBuilder()
+      .update(User)
+      .set({ name, age })
+      .where("id = :id", { id })
+      .execute();
+
     return { msg: `This action updates a user` };
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    await this.userRepository.delete(id);
     return { msg: `This action removes a #${id} user` };
   }
 }

@@ -26,6 +26,7 @@ interface UserService {
   remove({}): Observable<any>;
 }
 
+
 @Controller('users')
 export class UsersController implements OnModuleInit {
   private userService: UserService;
@@ -52,9 +53,7 @@ export class UsersController implements OnModuleInit {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    console.log("-----------");
-    console.log(id);
-    const serviceResult = this.userService.findOne(+id);
+    const serviceResult = this.userService.findOne({id:+id} );
     console.log(serviceResult);
     return serviceResult;
   }
@@ -73,7 +72,7 @@ export class UsersController implements OnModuleInit {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    const serviceResult = this.userService.remove(+id);
+    const serviceResult = this.userService.remove({id:+id});
     console.log(serviceResult);
     return serviceResult;
   }
