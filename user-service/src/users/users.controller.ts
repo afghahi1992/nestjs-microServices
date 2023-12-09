@@ -11,6 +11,12 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { GrpcMethod } from '@nestjs/microservices';
+import { Metadata, ServerUnaryCall } from "@grpc/grpc-js";
+// import { Micr1ById, Micr1 } from './proto/user.proto';
+
+interface Micr1 {
+  id: number;
+}
 
 @Controller('users')
 export class UsersController {
@@ -30,8 +36,11 @@ export class UsersController {
 
   @GrpcMethod('UserService', 'findOne')
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  findOne(data: Micr1, metadata: Metadata, call: ServerUnaryCall<any, any>) {
+    console.log("=====================");
+    console.log(data);
+    console.log(metadata);
+    return this.usersService.findOne(0);
   }
 
   @GrpcMethod('UserService', 'update')

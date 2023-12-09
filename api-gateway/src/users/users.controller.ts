@@ -38,23 +38,25 @@ export class UsersController implements OnModuleInit {
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
-    const result = this.userService.create(createUserDto);
-    console.log(result);
-    return result;
+    const serviceResult = this.userService.create(createUserDto);
+    console.log(serviceResult);
+    return serviceResult;
   }
 
   @Get()
   findAll() {
-    const result = this.userService.findAll(null);
-    console.log(result);
-    return result;
+    const serviceResult = this.userService.findAll(null);
+    console.log(serviceResult);
+    return serviceResult;
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    const result = this.userService.findOne(+id);
-    console.log(result);
-    return result;
+    console.log("-----------");
+    console.log(id);
+    const serviceResult = this.userService.findOne(+id);
+    console.log(serviceResult);
+    return serviceResult;
   }
 
   @Patch(':id')
@@ -64,16 +66,15 @@ export class UsersController implements OnModuleInit {
       age: updateUserDto.age,
       id: +id,
     };
-    console.log(updateModel);
-    const result = this.userService.update(updateModel);
-    console.log(result);
-    return result;
+    const serviceResult = this.userService.update(updateModel);
+    console.log(serviceResult);
+    return serviceResult;
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    const result = this.userService.remove(+id);
-    console.log(result);
-    return result;
+    const serviceResult = this.userService.remove(+id);
+    console.log(serviceResult);
+    return serviceResult;
   }
 }
