@@ -1,44 +1,70 @@
 import { Injectable } from "@nestjs/common";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
+import { User } from "./entities/user.entity";
+import * as bcrypt from "bcrypt";
+import { type } from "./enum/roles.enum";
+import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
+import { GrpcAlreadyExistsException, GrpcInternalException } from "nestjs-grpc-exceptions";
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return { msg: "This action adds a new user" };
+
+  constructor(
+    @InjectRepository(User) private readonly userRepository: Repository<User>
+  ) {
   }
 
-  findAll() {
-    const users = {
-      users: [
-        {
-          id: 1,
-          name: "ali",
-          email: "ali@yahoo.com",
-          age: 24,
-          password: "123"
-        },
-        {
-          id: 2,
-          name: "reza",
-          email: "reza@yahoo.com",
-          age: 24,
-          password: "123"
-        }
-      ]
-    };
-    return users;
+  async create(name: string, email: string, password: string, age: number) {
+    try {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const user: User = new User();
+      user.name = name;
+      user.age = age;
+      user.email = email;
+      user.password = hashedPassword;
+      user.type = type.USER;
+      return await this.userRepository.save(user);
+    } catch (error) {
+      if (error.code === "23505") throw new GrpcAlreadyExistsException("email must be unique.");
+      throw new GrpcInternalException("internal exception.");
+    }
   }
 
-  findOne(id: number) {
-    return { msg: `This action returns a #${id} user` };
+  async findAll() {
+    try {
+      return await this.userRepository.find();
+    } catch (error) {
+      throw new GrpcInternalException("internal exception.");
+    }
   }
 
-  update(updateUserDto: UpdateUserDto) {
-    return { msg: `This action updates a user` };
+  async findOne(id: number) {
+    try {
+      return await this.userRepository.findOneBy({ id });
+    } catch (error) {
+      throw new GrpcInternalException("internal exception.");
+    }
   }
 
-  remove(id: number) {
-    return { msg: `This action removes a #${id} user` };
+  async update(id: number, name: string, age: number) {
+    try {
+      return await this.userRepository
+        .createQueryBuilder()
+        .update(User)
+        .set({ name, age })
+        .where("id = :id", { id })
+        .execute();
+    } catch (error) {
+      console.log(error);
+      throw new GrpcInternalException("internal exception.");
+    }
+  }
+
+  async remove(id: number) {
+    try {
+      return await this.userRepository.delete(id);
+    } catch (error) {
+      throw new GrpcInternalException("internal exception.");
+    }
   }
 }

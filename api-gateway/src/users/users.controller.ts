@@ -7,12 +7,13 @@ import {
   Param,
   Delete,
   OnModuleInit,
-  Inject,
-} from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { ClientGrpc } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
+  Inject, UseInterceptors
+} from "@nestjs/common";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { ClientGrpc } from "@nestjs/microservices";
+import { Observable } from "rxjs";
+import { GrpcToHttpInterceptor } from "nestjs-grpc-exceptions";
 
 interface UserService {
   findAll({}): Observable<any>;
@@ -26,54 +27,50 @@ interface UserService {
   remove({}): Observable<any>;
 }
 
-@Controller('users')
+
+@Controller("users")
 export class UsersController implements OnModuleInit {
   private userService: UserService;
 
-  constructor(@Inject('USERPROTO_PACKAGE') private client: ClientGrpc) {}
+  constructor(@Inject("USERPROTO_PACKAGE") private client: ClientGrpc) {
+  }
 
   onModuleInit() {
-    this.userService = this.client.getService<UserService>('UserService');
+    this.userService = this.client.getService<UserService>("UserService");
   }
 
   @Post()
+  @UseInterceptors(GrpcToHttpInterceptor)
   create(@Body() createUserDto: CreateUserDto) {
-    const result = this.userService.create(createUserDto);
-    console.log(result);
-    return result;
+    return this.userService.create(createUserDto);
   }
 
   @Get()
+  @UseInterceptors(GrpcToHttpInterceptor)
   findAll() {
-    const result = this.userService.findAll(null);
-    console.log(result);
-    return result;
+    return this.userService.findAll(null);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    const result = this.userService.findOne(+id);
-    console.log(result);
-    return result;
+  @Get(":id")
+  @UseInterceptors(GrpcToHttpInterceptor)
+  findOne(@Param("id") id: string) {
+    return this.userService.findOne({ id: +id });
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  @Patch(":id")
+  @UseInterceptors(GrpcToHttpInterceptor)
+  update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
     const updateModel = {
       name: updateUserDto.name,
       age: updateUserDto.age,
-      id: +id,
+      id: +id
     };
-    console.log(updateModel);
-    const result = this.userService.update(updateModel);
-    console.log(result);
-    return result;
+    return this.userService.update(updateModel);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    const result = this.userService.remove(+id);
-    console.log(result);
-    return result;
+  @Delete(":id")
+  @UseInterceptors(GrpcToHttpInterceptor)
+  remove(@Param("id") id: string) {
+    return this.userService.remove({ id: +id });
   }
 }
