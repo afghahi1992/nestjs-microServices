@@ -36,6 +36,7 @@ export class UsersController {
     let serviceResult = await this.usersService.findOne(id);
     if (serviceResult) return serviceResult;
     throw new GrpcNotFoundException("user not found.");
+
   }
 
   @GrpcMethod("UserService", "update")
@@ -47,6 +48,7 @@ export class UsersController {
     let serviceResult = await this.usersService.update(id, name, age);
     console.log("======-----===");
     console.log(serviceResult.affected);
+    console.log("======-----========");
     console.log("======-----========");
     if (serviceResult.affected) return { msg: `user ${name} edited` };
     throw new GrpcNotFoundException("user not found.");

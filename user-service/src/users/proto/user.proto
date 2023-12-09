@@ -11,7 +11,7 @@ service UserService {
 }
 
 message findAllRequest {
-
+  string token = 1;
 }
 
 message findAllResponse {
@@ -32,11 +32,13 @@ message createRequest {
   string email = 3;
   int32 age = 4;
   string password = 5;
+  string token = 6;
 }
 
 
 message findOneRequest {
   int32 id = 1;
+  string token = 2;
 }
 message createResponse {
   string msg = 1;
@@ -46,6 +48,7 @@ message updateRequest {
   int32 id = 1;
   string name = 2;
   int32 age = 3;
+  string token = 4;
 }
 message updateResponse {
   string msg = 1;
@@ -54,6 +57,7 @@ message updateResponse {
 
 message removeRequest {
   int32 id = 1;
+  string token = 2;
 }
 message removeResponse {
   string msg = 1;

@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Headers,
   OnModuleInit,
   Inject, UseInterceptors
 } from "@nestjs/common";
@@ -51,52 +52,52 @@ export class UsersController implements OnModuleInit {
 
   @Post()
   @UseInterceptors(GrpcToHttpInterceptor)
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  create(@Body() createUserDto: CreateUserDto, @Headers("authorization") token: string) {
+    return this.userService.create({ ...createUserDto, token });
   }
 
   @Get()
   @UseInterceptors(GrpcToHttpInterceptor)
-  findAll() {
-    return this.userService.findAll(null);
+  findAll(@Headers("authorization") token: string) {
+    return this.userService.findAll({ token });
   }
 
   @Get(":id")
   @UseInterceptors(GrpcToHttpInterceptor)
-  findOne(@Param("id") id: string) {
-    return this.userService.findOne({ id: +id });
+  findOne(@Param("id") id: string, @Headers("authorization") token: string) {
+    return this.userService.findOne({ id: +id, token });
   }
 
   @Patch(":id")
   @UseInterceptors(GrpcToHttpInterceptor)
-  update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto, @Headers("authorization") token: string) {
     const updateModel = {
       name: updateUserDto.name,
       age: updateUserDto.age,
-      id: +id
+      id: +id,
+      token: token
     };
     return this.userService.update(updateModel);
   }
 
   @Delete(":id")
   @UseInterceptors(GrpcToHttpInterceptor)
-  remove(@Param("id") id: string) {
-    return this.userService.remove({ id: +id });
+  remove(@Param("id") id: string, @Headers("authorization") token: string) {
+    return this.userService.remove({ id: +id, token });
   }
 
-  @Post('signUp')
+  @Post("signUp")
   @UseInterceptors(GrpcToHttpInterceptor)
   signUp(@Body() signUpAuthDto: SignUpAuthDto) {
     // return {msg:'ok'};
     return this.authService.signUp(signUpAuthDto);
   }
 
-  @Post('signIn')
+  @Post("signIn")
   @UseInterceptors(GrpcToHttpInterceptor)
   signIn(@Body() signInAuthDto: SignInAuthDto) {
     return this.authService.signIn(signInAuthDto);
   }
-
 
 
 }
