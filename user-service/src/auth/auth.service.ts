@@ -49,6 +49,7 @@ export class AuthService {
       throw new GrpcUnauthenticatedException("Invalid Credential");
 
     const token = await this.generateToken(email, user.type, user.id);
+    console.log('token=====>',token);
     await this.authRepository
       .createQueryBuilder()
       .update(Auth)

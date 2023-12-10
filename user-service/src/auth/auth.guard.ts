@@ -1,7 +1,7 @@
 import {
   CanActivate,
   ExecutionContext,
-  Injectable,
+  Injectable
 } from "@nestjs/common";
 import * as JWT from "jsonwebtoken";
 import * as process from "process";
@@ -31,21 +31,19 @@ export class AuthGuard implements CanActivate {
 
     const token = context.switchToHttp().getRequest()?.token;
 
-    console.log('=======token=======');
+    console.log("=======token=======");
     console.log(token);
-    console.log('=======token=======');
+    console.log("=======token=======");
 
 
     if (!token)
       throw new GrpcUnauthenticatedException("token does not exist, please login first!");
 
-    try {
-      const payload: any = JWT.verify(token, process.env.TOKEN_KEY);
-      const oldToken = await this.getTokenFromDB(payload?.email);
-      if (oldToken === token) return true;
-    } catch {
+    const payload: any = JWT.verify(token, process.env.TOKEN_KEY);
+    const oldToken = await this.getTokenFromDB(payload?.email);
+    if (oldToken !== token)
       throw new GrpcUnauthenticatedException("invalid token, please login again!");
-    }
+
     return true;
   }
 
