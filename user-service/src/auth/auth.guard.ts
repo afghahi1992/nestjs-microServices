@@ -41,6 +41,10 @@ export class AuthGuard implements CanActivate {
         throw new Error("token does not exist");
 
       const payload: any = JWT.verify(token, process.env.TOKEN_KEY);
+      console.log("=======payload=======");
+      console.log(payload);
+      console.log("=======payload=======");
+
       const oldToken = await this.getTokenFromDB(payload?.email);
 
       if (oldToken !== token)
@@ -64,6 +68,9 @@ export class AuthGuard implements CanActivate {
 
   private async getTokenFromDB(email: string): Promise<string> {
     const user = await this.authRepository.findOneBy({ email });
-    return user.token;
+    console.log("=======user=======");
+    console.log(user);
+    console.log("=======user=======");
+    return user?.token;
   }
 }
