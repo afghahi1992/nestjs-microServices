@@ -1,4 +1,4 @@
-import { Controller, Body, Catch } from "@nestjs/common";
+import { Controller, Body } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
@@ -36,6 +36,7 @@ export class UsersController {
     let serviceResult = await this.usersService.findOne(id);
     if (serviceResult) return serviceResult;
     throw new GrpcNotFoundException("user not found.");
+
   }
 
   @GrpcMethod("UserService", "update")
@@ -47,6 +48,7 @@ export class UsersController {
     let serviceResult = await this.usersService.update(id, name, age);
     console.log("======-----===");
     console.log(serviceResult.affected);
+    console.log("======-----========");
     console.log("======-----========");
     if (serviceResult.affected) return { msg: `user ${name} edited` };
     throw new GrpcNotFoundException("user not found.");
