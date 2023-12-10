@@ -16,6 +16,7 @@ import { ClientGrpc } from "@nestjs/microservices";
 import { Observable } from "rxjs";
 import { GrpcToHttpInterceptor } from "nestjs-grpc-exceptions";
 import { PinoLogger } from "nestjs-pino";
+import * as process from "process";
 
 interface UserService {
   findAll({}): Observable<any>;
