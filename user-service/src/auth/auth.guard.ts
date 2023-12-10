@@ -10,7 +10,7 @@ import { Reflector } from "@nestjs/core";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Auth } from "./entities/auth.entity";
 import { Repository } from "typeorm";
-import { GrpcUnauthenticatedException } from "nestjs-grpc-exceptions";
+import { GrpcInternalException, GrpcUnauthenticatedException } from "nestjs-grpc-exceptions";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -36,14 +36,29 @@ export class AuthGuard implements CanActivate {
     console.log("=======token=======");
 
 
-    if (!token)
-      throw new GrpcUnauthenticatedException("token does not exist, please login first!");
+    try {
+      if (!token)
+        throw new Error("token does not exist");
 
-    const payload: any = JWT.verify(token, process.env.TOKEN_KEY);
-    const oldToken = await this.getTokenFromDB(payload?.email);
-    if (oldToken !== token)
-      throw new GrpcUnauthenticatedException("invalid token, please login again!");
+      const payload: any = JWT.verify(token, process.env.TOKEN_KEY);
+      const oldToken = await this.getTokenFromDB(payload?.email);
 
+      if (oldToken !== token)
+        throw new Error("expired token");
+
+    } catch (error) {
+      if (error.message === "token does not exist")
+        throw new GrpcUnauthenticatedException("token does not exist, please login first!");
+
+      if (error.message === "expired token")
+        throw new GrpcUnauthenticatedException("expired token, please send new token!");
+
+      if (error.message === "invalid signature")
+        throw new GrpcUnauthenticatedException("invalid token, please correct your token!");
+
+      console.error(error);
+      throw new GrpcInternalException("internal exception.");
+    }
     return true;
   }
 
