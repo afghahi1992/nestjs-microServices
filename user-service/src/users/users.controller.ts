@@ -46,9 +46,8 @@ export class UsersController {
     const name = updateUserDto?.name;
     const age = +updateUserDto?.age;
     let serviceResult = await this.usersService.update(id, name, age);
-    console.log("======-----===");
-    console.log(serviceResult.affected);
     console.log("======-----========");
+    console.log(serviceResult.affected);
     console.log("======-----========");
     if (serviceResult.affected) return { msg: `user ${name} edited` };
     throw new GrpcNotFoundException("user not found.");
@@ -58,8 +57,7 @@ export class UsersController {
   async remove(@Body() removeUserDto: RemoveUserDto) {
     let id = +removeUserDto?.id;
     let serviceResult = await this.usersService.remove(id);
-    console.log("======-----===");
-    console.log("======-----===");
+    console.log("======-----========");
     console.log(serviceResult.affected);
     console.log("======-----========");
     if (serviceResult.affected) return { msg: `user ${id} deleted` };

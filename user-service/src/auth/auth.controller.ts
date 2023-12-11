@@ -18,7 +18,6 @@ export class AuthController {
     const email = signUpDTO?.email;
     const password = signUpDTO?.password;
     const age = +signUpDTO?.age;
-    console.log(signUpDTO);
     let serviceResult = await this.authService.signUp(name, email, password, age);
     return { msg: serviceResult };
   }
