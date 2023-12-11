@@ -26,6 +26,7 @@ export class UsersService {
       return await this.userRepository.save(user);
     } catch (error) {
       if (error.code === "23505") throw new GrpcAlreadyExistsException("email must be unique.");
+      console.error(error);
       throw new GrpcInternalException("internal exception.");
     }
   }
@@ -34,6 +35,7 @@ export class UsersService {
     try {
       return await this.userRepository.find();
     } catch (error) {
+      console.error(error);
       throw new GrpcInternalException("internal exception.");
     }
   }
@@ -42,6 +44,7 @@ export class UsersService {
     try {
       return await this.userRepository.findOneBy({ id });
     } catch (error) {
+      console.error(error);
       throw new GrpcInternalException("internal exception.");
     }
   }
@@ -55,7 +58,7 @@ export class UsersService {
         .where("id = :id", { id })
         .execute();
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw new GrpcInternalException("internal exception.");
     }
   }
@@ -64,6 +67,7 @@ export class UsersService {
     try {
       return await this.userRepository.delete(id);
     } catch (error) {
+      console.error(error);
       throw new GrpcInternalException("internal exception.");
     }
   }
