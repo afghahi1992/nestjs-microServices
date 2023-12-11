@@ -14,7 +14,7 @@ import { ConfigModule } from "@nestjs/config";
       pinoHttp: {
         safe: true,
         transport: { target: "pino-pretty" },
-        msgPrefix: "===>"
+        msgPrefix: "===> "
       }
     }),
     UsersModule,

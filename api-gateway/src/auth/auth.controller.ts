@@ -35,14 +35,14 @@ export class AuthController implements OnModuleInit {
   @Post("signUp")
   @UseInterceptors(GrpcToHttpInterceptor)
   signUp(@Body() signUpAuthDto: SignUpAuthDto) {
-    this.logger.info("AuthController#signUp.call");
+    this.logger.info("AuthController ==> signUp");
     return this.authService.signUp(signUpAuthDto);
   }
 
   @Post("signIn")
   @UseInterceptors(GrpcToHttpInterceptor)
   signIn(@Body() signInAuthDto: SignInAuthDto) {
-    this.logger.info("AuthController#signIn.call");
+    this.logger.info("AuthController ==> signIn");
     return this.authService.signIn(signInAuthDto);
   }
 

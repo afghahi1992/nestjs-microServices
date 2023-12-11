@@ -46,28 +46,28 @@ export class UsersController implements OnModuleInit {
   @Post()
   @UseInterceptors(GrpcToHttpInterceptor)
   create(@Body() createUserDto: CreateUserDto, @Headers("authorization") token: string) {
-    this.logger.info("AuthController#create.call");
+    this.logger.info("AuthController ==> create");
     return this.userService.create({ ...createUserDto, token });
   }
 
   @Get()
   @UseInterceptors(GrpcToHttpInterceptor)
   findAll(@Headers("authorization") token: string) {
-    this.logger.info("AuthController#findAll.call");
+    this.logger.info("AuthController ==> findAll");
     return this.userService.findAll({ token });
   }
 
   @Get(":id")
   @UseInterceptors(GrpcToHttpInterceptor)
   findOne(@Param("id") id: string, @Headers("authorization") token: string) {
-    this.logger.info("AuthController#findOne.call");
+    this.logger.info("AuthController ==> findOne");
     return this.userService.findOne({ id: +id, token });
   }
 
   @Patch(":id")
   @UseInterceptors(GrpcToHttpInterceptor)
   update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto, @Headers("authorization") token: string) {
-    this.logger.info("AuthController#update.call");
+    this.logger.info("AuthController ==> update");
     const updateModel = {
       name: updateUserDto.name,
       age: updateUserDto.age,
@@ -80,7 +80,7 @@ export class UsersController implements OnModuleInit {
   @Delete(":id")
   @UseInterceptors(GrpcToHttpInterceptor)
   remove(@Param("id") id: string, @Headers("authorization") token: string) {
-    this.logger.info("AuthController#remove.call");
+    this.logger.info("AuthController ==> remove");
     return this.userService.remove({ id: +id, token });
   }
 
