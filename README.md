@@ -26,7 +26,7 @@ PostgreSQL is used as the database and typeorm is used as the Object-Relational 
 
 ## Response Format
 
-In the following the template of successful request and error is shown.
+In the following, the template of successful requests and errors is shown.
 
 ```
 
@@ -39,6 +39,7 @@ Success
         "description": "something"
     }
 }
+```
 ```
 Error
 {
