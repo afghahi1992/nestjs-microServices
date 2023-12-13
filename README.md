@@ -29,7 +29,6 @@ PostgreSQL is used as the database and typeorm is used as the Object-Relational 
 In the following, the template of successful requests and errors is shown.
 
 ```
-
 Success
 {
     "message": "The service was executed successfully",
