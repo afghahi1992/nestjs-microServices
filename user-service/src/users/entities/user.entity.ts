@@ -24,5 +24,4 @@ export class User {
 
   @Column({ type: "text" })
   type: type;
-
 }
