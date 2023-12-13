@@ -1,5 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { type } from '../enum/roles.enum';
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { type } from "../enum/roles.enum";
 
 @Entity()
 export class User {
@@ -9,19 +9,21 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 30 })
+  @Column({ type: "varchar", length: 30 })
   name: string;
 
-  @Column({ type: 'varchar', length: 100 })
+  @Column({ type: "varchar", length: 100 })
   password: string;
 
   @Column({ unique: true })
-  @Column({ type: 'varchar', length: 40 })
+  @Column({ type: "varchar", length: 40 })
   email: string;
 
-  @Column({ type: 'int' })
+  @Column({ type: "int" })
   age: number;
 
-  @Column({ type: 'text' })
+  @Column({ type: "text" })
   type: type;
+
+
 }
