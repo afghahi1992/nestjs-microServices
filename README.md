@@ -22,3 +22,28 @@ gRPC was chosen as the framework to do the microservices. Protocol buffers were 
 
 Persistence Layer
 PostgreSQL is used as the database and typeorm is used as the Object-Relational Mapper (ORM).
+
+
+## Response Format
+
+In the following the template of successful request and error is shown.
+
+```
+
+Success
+{
+    "message": "The service was executed successfully",
+    "statusCode": 200,
+    "data": {
+        "users": "something",
+        "description": "something"
+    }
+}
+```
+Error
+{
+    "message": "something",
+    "statusCode": number,
+    "error": "something"
+}
+```
