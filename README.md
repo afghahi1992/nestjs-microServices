@@ -12,3 +12,13 @@ The controllers of the REST API make calls to the gRPC servers/microservices in 
 
  
 <img width="600" alt="archi-diagram" src="https://github.com/afghahi1992/nestjs-microServices/assets/79860891/ba9f23fb-e2f9-47c7-8e54-66244d64cb14">
+
+## Layers
+API Layer
+NestJS + Express acts as the API Layer for the architecture. It takes care of listening to client requests and calling the appropriate back-end microservice to fulfill them.
+
+Microservice Layer
+gRPC was chosen as the framework to do the microservices. Protocol buffers were used as the data interchange format between the client (REST API) and the server (gRPC microservices). NestJS is still the framework used to create the gRPC Microservices.
+
+Persistence Layer
+PostgreSQL is used as the database and typeorm is used as the Object-Relational Mapper (ORM).
