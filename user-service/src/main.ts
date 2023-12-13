@@ -12,7 +12,7 @@ async function bootstrap() {
       options: {
         package: "transferproto",
         protoPath: join(__dirname, "./proto/transfer.proto"),
-        url: "0.0.0.0:50052"
+        url: `${process.env.GRPC_URL}:${process.env.GRPC_PORT}`
       }
     }
   );

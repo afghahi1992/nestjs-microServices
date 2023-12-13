@@ -31,9 +31,9 @@ export class AuthGuard implements CanActivate {
 
     const token = context.switchToHttp().getRequest()?.token;
 
-    console.log("=======token=======");
-    console.log(token);
-    console.log("=======token=======");
+    // console.log("=======token=======");
+    // console.log(token);
+    // console.log("=======token=======");
 
 
     try {
@@ -41,9 +41,9 @@ export class AuthGuard implements CanActivate {
         throw new Error("token does not exist");
 
       const payload: any = JWT.verify(token, process.env.TOKEN_KEY);
-      console.log("=======payload=======");
-      console.log(payload);
-      console.log("=======payload=======");
+      // console.log("=======payload=======");
+      // console.log(payload);
+      // console.log("=======payload=======");
 
       const oldToken = await this.getTokenFromDB(payload?.email);
 
@@ -52,25 +52,25 @@ export class AuthGuard implements CanActivate {
 
     } catch (error) {
       if (error.message === "token does not exist")
-        throw new GrpcUnauthenticatedException("token does not exist, please login first!");
+        throw new GrpcUnauthenticatedException("token does not exist, please login first");
 
       if (error.message === "expired token")
-        throw new GrpcUnauthenticatedException("expired token, please send new token!");
+        throw new GrpcUnauthenticatedException("expired token, please send new token");
 
       if (error.message === "invalid signature")
-        throw new GrpcUnauthenticatedException("invalid token, please correct your token!");
+        throw new GrpcUnauthenticatedException("invalid token, please correct your token");
 
       console.error(error);
-      throw new GrpcInternalException("internal exception.");
+      throw new GrpcInternalException("internal exception");
     }
     return true;
   }
 
   private async getTokenFromDB(email: string): Promise<string> {
     const user = await this.authRepository.findOneBy({ email });
-    console.log("=======user=======");
-    console.log(user);
-    console.log("=======user=======");
+    // console.log("=======user=======");
+    // console.log(user);
+    // console.log("=======user=======");
     return user?.token;
   }
 }

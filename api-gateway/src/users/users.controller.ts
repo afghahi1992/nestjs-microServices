@@ -16,6 +16,7 @@ import { ClientGrpc } from "@nestjs/microservices";
 import { Observable } from "rxjs";
 import { GrpcToHttpInterceptor } from "nestjs-grpc-exceptions";
 import { PinoLogger } from "nestjs-pino";
+import { TransformInterceptor } from "../interceptors/transform.interceptor";
 
 interface UserService {
   findAll({}): Observable<any>;
@@ -31,6 +32,8 @@ interface UserService {
 
 
 @Controller("users")
+@UseInterceptors(TransformInterceptor)
+@UseInterceptors(GrpcToHttpInterceptor)
 export class UsersController implements OnModuleInit {
   private userService: UserService;
 
@@ -43,28 +46,24 @@ export class UsersController implements OnModuleInit {
   }
 
   @Post()
-  @UseInterceptors(GrpcToHttpInterceptor)
   create(@Body() createUserDto: CreateUserDto, @Headers("authorization") token: string) {
     this.logger.info("AuthController ==> create");
     return this.userService.create({ ...createUserDto, token });
   }
 
   @Get()
-  @UseInterceptors(GrpcToHttpInterceptor)
-  findAll(@Headers("authorization") token: string) {
+  async findAll(@Headers("authorization") token: string) {
     this.logger.info("AuthController ==> findAll");
     return this.userService.findAll({ token });
   }
 
   @Get(":id")
-  @UseInterceptors(GrpcToHttpInterceptor)
   findOne(@Param("id") id: string, @Headers("authorization") token: string) {
     this.logger.info("AuthController ==> findOne");
     return this.userService.findOne({ id: +id, token });
   }
 
   @Patch(":id")
-  @UseInterceptors(GrpcToHttpInterceptor)
   update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto, @Headers("authorization") token: string) {
     this.logger.info("AuthController ==> update");
     const updateModel = {
@@ -77,7 +76,6 @@ export class UsersController implements OnModuleInit {
   }
 
   @Delete(":id")
-  @UseInterceptors(GrpcToHttpInterceptor)
   remove(@Param("id") id: string, @Headers("authorization") token: string) {
     this.logger.info("AuthController ==> remove");
     return this.userService.remove({ id: +id, token });
