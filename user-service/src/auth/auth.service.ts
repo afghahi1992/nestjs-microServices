@@ -24,7 +24,7 @@ export class AuthService {
   async signUp(name: string, email: string, password: string, age: number) {
 
     const user = await this.userRepository.findOneBy({ email });
-    if (user) throw new GrpcAlreadyExistsException("already exist!");
+    if (user) throw new GrpcAlreadyExistsException("already exist");
     const hashedPassword = await bcrypt.hash(password, 10);
     const userModel = {
       name,
@@ -43,10 +43,10 @@ export class AuthService {
 
     const user = await this.userRepository.findOneBy({ email });
     if (!user)
-      throw new GrpcNotFoundException("user not found!");
+      throw new GrpcNotFoundException("user not found");
     const isUserValid = await bcrypt.compare(password, user.password);
     if (!isUserValid)
-      throw new GrpcUnauthenticatedException("Invalid Credential");
+      throw new GrpcUnauthenticatedException("invalid credential");
 
     const token = await this.generateToken(email, user.type, user.id);
     await this.authRepository

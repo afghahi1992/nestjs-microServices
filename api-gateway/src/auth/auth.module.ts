@@ -10,7 +10,7 @@ import { join } from "path";
         name: "TRANSFERPROTO_PACKAGE",
         transport: Transport.GRPC,
         options: {
-          url: "0.0.0.0:50052",
+          url: `${process.env.GRPC_URL}:${process.env.GRPC_PORT}`,
           package: "transferproto",
           protoPath: join(__dirname, "../proto/transfer.proto")
         }

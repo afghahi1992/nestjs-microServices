@@ -3,11 +3,11 @@ syntax = "proto3";
 package transferproto;
 
 service UserService {
-  rpc findAll(findAllRequest) returns (findAllResponse) {}
-  rpc create(createRequest) returns (createResponse) {}
-  rpc findOne(findOneRequest) returns (User) {}
-  rpc update(updateRequest) returns (updateResponse) {}
-  rpc remove(removeRequest) returns (removeResponse) {}
+  rpc findAll (findAllRequest) returns (findAllResponse) {}
+  rpc create (createRequest) returns (createResponse) {}
+  rpc findOne (findOneRequest) returns (findOneResponse) {}
+  rpc update (updateRequest) returns (updateResponse) {}
+  rpc remove (removeRequest) returns (removeResponse) {}
 }
 
 message findAllRequest {
@@ -16,6 +16,7 @@ message findAllRequest {
 
 message findAllResponse {
   repeated User users = 1;
+  string description = 2;
 }
 
 message User {
@@ -33,14 +34,18 @@ message createRequest {
   string password = 5;
   string token = 6;
 }
-
+message createResponse {
+  User users = 1;
+  string description = 2;
+}
 
 message findOneRequest {
   int32 id = 1;
   string token = 2;
 }
-message createResponse {
-  string msg = 1;
+message findOneResponse {
+  User users = 1;
+  string description = 2;
 }
 
 message updateRequest {
@@ -50,7 +55,8 @@ message updateRequest {
   string token = 4;
 }
 message updateResponse {
-  string msg = 1;
+  User users = 1;
+  string description = 2;
 }
 
 
@@ -59,13 +65,14 @@ message removeRequest {
   string token = 2;
 }
 message removeResponse {
-  string msg = 1;
+  User users = 1;
+  string description = 2;
 }
 
 
 service AuthService {
-  rpc signIn(signInRequest) returns (signInResponse) {}
-  rpc signUp(signUpRequest) returns (signUpResponse) {}
+  rpc signIn (signInRequest) returns (signInResponse) {}
+  rpc signUp (signUpRequest) returns (signUpResponse) {}
 }
 message signUpRequest {
   int32 id = 1;
@@ -75,7 +82,8 @@ message signUpRequest {
   string password = 5;
 }
 message signUpResponse {
-  string msg = 1;
+  string token = 1;
+  string description = 2;
 }
 
 
@@ -87,5 +95,6 @@ message signInRequest {
   string password = 5;
 }
 message signInResponse {
-  string msg = 1;
+  string token = 1;
+  string description = 2;
 }

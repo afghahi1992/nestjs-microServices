@@ -11,6 +11,7 @@ import { GrpcToHttpInterceptor } from "nestjs-grpc-exceptions";
 import { SignUpAuthDto } from "./dto/signUp-auth.dto";
 import { SignInAuthDto } from "./dto/signIn-auth.dto";
 import { PinoLogger } from "nestjs-pino";
+import { TransformInterceptor } from "../interceptors/transform.interceptor";
 
 
 interface AuthService {
@@ -21,6 +22,8 @@ interface AuthService {
 
 
 @Controller("auth")
+@UseInterceptors(GrpcToHttpInterceptor)
+@UseInterceptors(TransformInterceptor)
 export class AuthController implements OnModuleInit {
   private authService: AuthService;
 
@@ -33,14 +36,12 @@ export class AuthController implements OnModuleInit {
   }
 
   @Post("signUp")
-  @UseInterceptors(GrpcToHttpInterceptor)
   signUp(@Body() signUpAuthDto: SignUpAuthDto) {
     this.logger.info("AuthController ==> signUp");
     return this.authService.signUp(signUpAuthDto);
   }
 
   @Post("signIn")
-  @UseInterceptors(GrpcToHttpInterceptor)
   signIn(@Body() signInAuthDto: SignInAuthDto) {
     this.logger.info("AuthController ==> signIn");
     return this.authService.signIn(signInAuthDto);
