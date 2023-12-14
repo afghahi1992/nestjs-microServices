@@ -1,0 +1,65 @@
+version: "3.5"
+services:
+
+  db:
+    image: postgres
+    networks:
+      - "usersDomain"
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+      - PGPORT=${DB_PORT}
+    container_name: postgres-db
+    volumes:
+      - ./data/user-db-data:/var/lib/postgresql/data
+
+
+  api-gateway:
+    build:
+      context: './api-gateway/'
+      # dockerfile: './api-gateway/dockerfile'
+    image: reza/gateway:latest
+    networks:
+      - "frontend"
+
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - PORT=${PORT}
+      - GRPC_URL=${GRPC_URL}
+    ports:
+      - ${PORT}:${PORT}
+    container_name: api-gateway
+
+
+  app:
+    build:
+      context: './user-service/'
+      # dockerfile: './user-service/dockerfile'
+
+    image: reza/user:latest
+    networks:
+      - "frontend"
+      - "backend"
+      - "usersDomain"
+
+    environment:
+      - TOKEN_KEY=${TOKEN_KEY}
+      - NODE_ENV=${NODE_ENV}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+    ports:
+      - ${GRPC_PORT}:${GRPC_PORT}
+    container_name: user-service
+    depends_on:
+      - db
+
+
+networks:
+  frontend:
+  backend:
+  usersDomain:

@@ -1,6 +1,6 @@
 import { registerAs } from "@nestjs/config";
 import { config as dotenvConfig } from "dotenv";
-// import { DataSource, DataSourceOptions } from "typeorm";
+import { DataSource, DataSourceOptions } from "typeorm";
 import { ConfigService } from "@nestjs/config";
 
 const configService = new ConfigService();
@@ -16,10 +16,10 @@ export const config = {
   entities: ["dist/**/entities/*.entity{.ts,.js}"],
   logging: true,
 
-  synchronize: false,
+  synchronize: true,
   migrations: ["dist/migrations/*{.ts,.js}"],
   migrationsRun: false
 };
 
 export default registerAs("typeorm", () => config);
-// export const connectionSource = new DataSource(config as DataSourceOptions);
+export const connectionSource = new DataSource(config as DataSourceOptions);
